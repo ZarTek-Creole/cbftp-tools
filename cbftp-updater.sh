@@ -2,45 +2,46 @@
 
 ###############################################################################################
 #
-#   Nom         :
+#   Name         :
 #       cbftp-updater.sh
 #
-#   Description :
-#       Script Bash pour la gestion et la mise à jour automatique de cbftp via Subversion (SVN).
-#       Simplifiez la tâche de maintenir votre installation cbftp à jour avec ce script efficace.
+#   Description  :
+#       Bash script for managing and automatically updating cbftp via Subversion (SVN).
+#       Simplify the task of keeping your cbftp installation up to date with this efficient script.
 #
-#   Donations   :
+#   Donations    :
 #       https://github.com/ZarTek-Creole/DONATE
 #
-#	Auteur		:
-#		ZarTek @ https://github.com/ZarTek-Creole
+#   Author       :
+#       ZarTek @ https://github.com/ZarTek-Creole
 #
-#   Repository  :
+#   Repository   :
 #       https://github.com/ZarTek-Creole/cbftp-updater
 #
-#   Support     :
+#   Support      :
 #       https://github.com/ZarTek-Creole/cbftp-updater/issues
 #
 #
-#   Remerciements :
-#       À tous les contributeurs et utilisateurs de cbftp-updater
-#
+#   Acknowledgements :
+#       Special thanks to the cbftp project, PCFiL, harrox, deeps, and all developers in the scene. 
+#       Special thanks to all the contributors and users of cbftp-updater for their support 
+#       and contributions to the project.
 ###############################################################################################
 
 set -Eeuo pipefail
 
 # Configuration
-CBUSER=mon_utilisateur
-CBSERVICE=service.cbftp
-CBDIRSRC="/chemin/vers/le/repertoire/source"
-CBDIRDEST="/chemin/vers/le/repertoire/destination"
+CBUSER=my_user
+CBSERVICE=cbftp.service
+CBDIRSRC="/path/to/source/directory"
+CBDIRDEST="/path/to/destination/directory"
 SVN_URL="https://cbftp.glftpd.io/svn"
 
-trap 'echo "Erreur lors de l exécution du script: $BASH_COMMAND" ; exit 1' ERR
+trap 'echo "Error during script execution: $BASH_COMMAND" ; exit 1' ERR
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
-        echo "Ce script nécessite des privilèges root. Utilisez 'sudo' ou connectez-vous en tant que root."
+        echo "This script requires root privileges. Use 'sudo' or log in as root."
         exit 1
     fi
 }
@@ -49,7 +50,7 @@ check_dependencies() {
     local dependencies=(svn make systemctl)
     for cmd in "${dependencies[@]}"; do
         if ! command -v "$cmd" &> /dev/null; then
-            echo "Erreur: $cmd est requis mais n'est pas installé. Installez-le avec 'sudo apt-get install $cmd'."
+            echo "Error: $cmd is required but not installed. Install it with 'sudo apt-get install subversion build-essential systemctl'."
             exit 1
         fi
     done
@@ -57,7 +58,7 @@ check_dependencies() {
 
 verify_directory() {
     if [ ! -d "$1" ]; then
-        echo "Le répertoire $1 n'existe pas. Veuillez vérifier le chemin et réessayer."
+        echo "The directory $1 does not exist. Please check the path and try again."
         exit 1
     fi
 }
@@ -87,19 +88,19 @@ restart_service() {
 
 initialize_or_update_svn() {
     if [ ! -d "$CBDIRSRC/.svn" ]; then
-        echo "Initialisation du dépôt SVN dans $CBDIRSRC"
+        echo "Initializing SVN repository in $CBDIRSRC"
         svn checkout "$SVN_URL" "$CBDIRSRC"
     else
         local current_url=$(get_svn_info "$CBDIRSRC" repos-root-url)
         if [ "$current_url" != "$SVN_URL" ]; then
-            echo "Mise à jour de l URL du dépôt SVN. changement de $current_url à $SVN_URL"
+            echo "Updating SVN repository URL. Changing from $current_url to $SVN_URL"
             svn relocate "$SVN_URL" "$CBDIRSRC"
         fi
     fi
 }
 
 main() {
-    echo "Début de la mise à jour de cbftp."
+    echo "Starting cbftp update."
     check_root
     check_dependencies
     initialize_or_update_svn
@@ -109,16 +110,16 @@ main() {
     local remote_rev=$(get_svn_info "$CBDIRSRC" revision)
 
     if [ "$local_rev" == "$remote_rev" ]; then
-        echo "Dernière version de cbftp déjà installée (révision: $local_rev)."
+        echo "Latest version of cbftp already installed (revision: $local_rev)."
         exit 0
     fi
 
-    echo "Mise à jour de cbftp de la révision $local_rev à $remote_rev."
+    echo "Updating cbftp from revision $local_rev to $remote_rev."
     update_sources
     build_cbftp
     deploy_cbftp
     restart_service
-    echo "Mise à jour de cbftp terminée avec succès."
+    echo "cbftp update completed successfully."
 }
 
 main "$@"
