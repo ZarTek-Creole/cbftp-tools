@@ -7,20 +7,22 @@
 [![Contributors](https://img.shields.io/github/contributors/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/commits/main)
 
-
 ## Table of Contents
 
-- [Description](#description)
-- [Donation](#donation)
-- [Author](#author)
-- [Repository](#repository)
-- [Support](#support)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Automating Updates with Cron](#automating-updates-with-cron)
-- [Creating a CBFTP Service](#creating-a-cbftp-service)
-- [Attaching to the CBFTP Screen Session](#attaching-to-the-cbftp-screen-session)
-- [Acknowledgments](#acknowledgments)
+- [cbftp-updater](#cbftp-updater)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Donation](#donation)
+  - [Author](#author)
+  - [Repository](#repository)
+  - [Support](#support)
+  - [Configuration](#configuration)
+  - [Usage](#usage)
+  - [Automating Updates with Cron](#automating-updates-with-cron)
+  - [Creating a CBFTP Service](#creating-a-cbftp-service)
+  - [Attaching to the CBFTP Screen Session](#attaching-to-the-cbftp-screen-session)
+  - [Acknowledgments](#acknowledgments)
+  - [Official CBFTP Website](#official-cbftp-website)
 
 ## Description
 
@@ -48,18 +50,18 @@ For any issues, questions, or suggestions related to this script, please visit t
 Before using the script, please make sure to configure the following variables in the script:
 
 ```bash
-CBUSER=your_user
-CBSERVICE=cbftp.service
-CBDIRSRC="/path/to/source/directory"
-CBDIRDEST="/path/to/destination/directory"
-SVN_URL="https://cbftp.glftpd.io/svn"
+CB_USER=your_user
+CB_SERVICE=cbftp.service
+CB_DIR_SRC="/path/to/source/directory"
+CB_DIR_DEST="/path/to/destination/directory"
+CB_SVN_URL="https://cbftp.glftpd.io/svn"
 ```
 
-- `CBUSER`: The user for cbftp.
-- `CBSERVICE`: The service name for cbftp.
-- `CBDIRSRC`: The source directory path for cbftp.
-- `CBDIRDEST`: The destination directory path for cbftp.
-- `SVN_URL`: The SVN repository URL for cbftp.
+- `CB_USER`: The user for cbftp.
+- `CB_SERVICE`: The service name for cbftp.
+- `CB_DIR_SRC`: The source directory path for cbftp.
+- `CB_DIR_DEST`: The destination directory path for cbftp.
+- `CB_SVN_URL`: The SVN repository URL for cbftp.
 
 ## Usage
 
@@ -78,7 +80,7 @@ SVN_URL="https://cbftp.glftpd.io/svn"
 3. Make the script executable:
 
    ```bash
-   chmod +x cbftp-updater.sh
+   chmod +x cbftp-install_service.sh
    ```
 
 4. Edit the script to configure the variables mentioned in the "Configuration" section.
@@ -86,7 +88,7 @@ SVN_URL="https://cbftp.glftpd.io/svn"
 5. Run the script:
 
    ```bash
-   ./cbftp-updater.sh
+   ./cbftp-install_service.sh
    ```
 
 The script will manage and update your cbftp installation as needed.
@@ -108,16 +110,16 @@ To automate the execution of this script once a week, you can use the cron sched
 3. Add the following line to schedule the script to run once a week:
 
    ```bash
-   0 0 * * 0 /path/to/your/script/cbftp-updater.sh
+   0 0 * * 0 /path/to/your/script/cbftp-install_service.sh
    ```
 
-   This line schedules the script to run at midnight (00:00) every Sunday (day of the week 0). Replace "/path/to/your/script" with the full path to the directory where your "cbftp-updater.sh" script is located.
+   This line schedules the script to run at midnight (00:00) every Sunday (day of the week 0). Replace "/path/to/your/script" with the full path to the directory where your "cbftp-install_service.sh" script is located.
 
 4. Save and close the text editor.
 
 5. The cron is now configured to run your script once a week, automatically keeping your cbftp installation up to date.
 
-Make sure your script is still executable with the `chmod +x cbftp-updater.sh` command so that it can be executed by the cron. You can customize the schedule by adjusting the values in the cron line according to your needs.
+Make sure your script is still executable with the `chmod +x cbftp-install_service.sh` command so that it can be executed by the cron. You can customize the schedule by adjusting the values in the cron line according to your needs.
 
 ## Creating a CBFTP Service
 

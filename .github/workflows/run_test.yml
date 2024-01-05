@@ -1,0 +1,45 @@
+name: Test cbftp-updater Script
+
+on: [push, pull_request]
+
+jobs:
+  test-cbftp-updater-script:
+    runs-on: ubuntu-latest
+    name: Run tests on ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade --force-yes -y
+          sudo apt-get install -y subversion build-essential screen
+          mkdir -p $HOME/_downloads/cbftp
+          mkdir -p $HOME/_autotrade/cbftp
+      - name: Configure Environment Variables
+        run: |
+          echo "CB_USER=$(id -u)" >> cbftp-updater.cfg
+          echo "CB_SCREEN=cbftp" >> cbftp-updater.cfg
+          echo "CB_SERVICE=cbftp.service" >> cbftp-updater.cfg
+          echo "CB_DIR_SRC=$HOME/_downloads/cbftp" >> cbftp-updater.cfg
+          echo "CB_DIR_DEST=$HOME/_autotrade/cbftp" >> cbftp-updater.cfg
+          echo "CB_SVN_URL=https://cbftp.glftpd.io/svn" >> cbftp-updater.cfg
+
+      - name: Run cbftp Updater Script
+        run: |
+          chmod +x ./cbftp-updater.sh
+          sudo ./cbftp-updater.sh
+      # - name: Check systemd Availability
+      #   run: |
+      #       # sudo apt-get install -y systemd-coredump socat
+      #       sudo podman pull ghcr.io/eriksjolund/socket-activate-echo:latest
+      #       if ! sudo systemctl; then
+      #         echo "systemd is not available, skipping systemd related steps."
+      #         exit 0
+      #       fi
+      # - name: Install and Start cbftp Service
+      #   run: |
+      #     sudo loginctl enable-linger runner
+      #     sleep 5
+      #     ls /run/user/$UID 
+      #     chmod +x ./cbftp-install_service.sh
+      #     sudo ./cbftp-install_service.sh

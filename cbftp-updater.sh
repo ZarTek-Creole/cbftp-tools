@@ -29,14 +29,19 @@
 ###############################################################################################
 
 set -Eeuo pipefail
+set -Eeuo pipefail
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-# Configuration
-CBUSER=my_user # The user under which cbftp is executed
-CBSERVICE=cbftp.service # Service name, if you are using a systemctl service
-CBSCREEN=cbftp # Screen name, if you are not using a systemctl service
-CBDIRSRC="/path/to/source/directory" # Directory where the cbftp source is located
-CBDIRDEST="/path/to/destination/directory" # Directory where the cbftp binary will be placed
-SVN_URL="https://cbftp.glftpd.io/svn" # without the /cbftp ending
+CFG_FILE="$SCRIPT_DIR/cbftp-updater.cfg"
+
+if [ ! -f "$CFG_FILE" ]; then
+    echo "Error: Configuration file 'cbftp-updater.cfg' not found. Please rename 'cbftp-updater.cfg.default' to 'cbftp-updater.cfg' and edit it with your configuration."
+    exit 1
+fi
+
+# shellcheck disable=SC1090
+. "$CFG_FILE" || exit 1
+
 
 trap 'echo "Error during script execution: $BASH_COMMAND" ; exit 1' ERR
 
@@ -73,14 +78,15 @@ update_sources() {
 }
 
 build_cbftp() {
-    echo "Changing to directory: $CBDIRSRC"
-    cd "$CBDIRSRC" || { echo "Failed to change to directory $CBDIRSRC"; exit 1; }
-
+    echo "Changing to directory: $CB_DIR_SRC"
+    cd "$CB_DIR_SRC" || { echo "Failed to change to directory $CB_DIR_SRC"; exit 1; }
+    
     echo "Building cbftp..."
-    make -j$(nproc) -s || { echo "Build failed"; exit 1; }
-
+    make -j"$(nproc)" -s || { echo "Build failed"; exit 1; }
+    
     cd - > /dev/null
 }
+
 
 has_systemctl() {
     if command -v systemctl &> /dev/null; then
@@ -91,62 +97,76 @@ has_systemctl() {
     return 1
 }
 
-stop_cbftp_service() {
-    if has_systemctl; then
-        echo "Using systemctl to stop the service."
-        systemctl stop "$CBSERVICE" || { echo "Failed to stop service $CBSERVICE"; exit 1; }
+stop_cbftp_or_service() {
+    # Check if systemd service exists and is active
+    if has_systemctl && systemctl is-active --quiet "$CB_SERVICE" &> /dev/null; then
+        echo "Stopping $CB_SERVICE service..."
+        systemctl stop "$CB_SERVICE"
+        local stopped
+        stopped=$?
+        if [ ! "$stopped" -eq 0 ]; then
+            echo "Failed to stop $CB_SERVICE service"
+            exit 1
+        fi
+        echo "$CB_SERVICE service stopped successfully."
     else
-        local pids=$(pgrep -f /cbftp$)
-        for pid in $pids; do
-            if [ -n "$pid" ]; then
-                echo "Killing cbftp process with PID $pid"
-                kill "$pid" || { echo "Failed to kill cbftp process with PID $pid"; exit 1; }
+        # Check if the process $CB_DIR_DEST/cbftp is running
+        if pidof -x "$CB_DIR_DEST/cbftp" &> /dev/null; then
+            local pid
+            pid=$(pidof -x "$CB_DIR_DEST/cbftp")
+            echo "Process $CB_DIR_DEST/cbftp is running (PID $pid)."
+            echo "Stopping $CB_DIR_DEST/cbftp process..."
+            kill "$pid"
+            local killed
+            killed=$?
+            if [ ! "$killed" -eq 0 ]; then
+                echo "Failed to stop $CB_DIR_DEST/cbftp process"
+                exit 1
             fi
-        done
-        sleep 2  # Wait for the process to stop
-        local pids_after_kill=$(pgrep -f /cbftp$)
-        if [ -n "$pids_after_kill" ]; then
-            echo "Forcing kill for remaining cbftp processes"
-            kill -9 $pids_after_kill
+            echo "$CB_DIR_DEST/cbftp process stopped successfully."
+        else
+            echo "Neither $CB_SERVICE service nor $CB_DIR_DEST/cbftp process is running."
         fi
     fi
 }
 
 start_cbftp_service() {
-    if has_systemctl; then
-        systemctl start "$CBSERVICE" || { echo "Failed to start service $CBSERVICE"; exit 1; }
+    if has_systemctl && systemctl list-units --all | grep -q "$CB_SERVICE.service"; then
+        echo "Starting cbftp service..."
+        systemctl start "$CB_SERVICE" || { echo "Failed to start service $CB_SERVICE"; exit 1; }
     else
-        /usr/bin/screen -dmS "$CBSCREEN" "${CBDIRDEST}/cbftp"
+        echo "Starting cbftp screen..."
+        /usr/bin/screen -dmS "$CB_SCREEN" "${CB_DIR_DEST}/cbftp"
     fi
 }
 
 deploy_cbftp() {
-    echo "Stopping cbftp service..."
-    stop_cbftp_service
+    echo "Stopping cbftp or cbftp service..."
+    stop_cbftp_or_service
 
     echo "Deploying new cbftp binary..."
-    cp -v "$CBDIRSRC/bin/cbftp" "$CBDIRDEST" || { echo "Failed to deploy cbftp"; exit 1; }
-    chown -R "$CBUSER:$CBUSER" "$CBDIRDEST"
-    chmod +x "$CBDIRDEST/cbftp"
+    cp -v "$CB_DIR_SRC/bin/cbftp" "$CB_DIR_DEST" || { echo "Failed to deploy cbftp"; exit 1; }
+    chown -R "$CB_USER:$CB_USER" "$CB_DIR_DEST"
+    chmod +x "$CB_DIR_DEST/cbftp"
 
-    echo "Starting cbftp service..."
     start_cbftp_service
 }
 
-restart_service() {
-    systemctl stop "$CBSERVICE" && systemctl start "$CBSERVICE"
-}
-
 initialize_or_update_svn() {
-    if [ ! -d "$CBDIRSRC/.svn" ]; then
-        echo "Initializing SVN repository in $CBDIRSRC"
-        svn checkout -q "${SVN_URL}/cbftp" "$CBDIRSRC" || exit 1
+    if [ ! -d "$CB_DIR_SRC/.svn" ]; then
+        echo "Initializing SVN repository in $CB_DIR_SRC"
+        if ! svn checkout -q "${CB_SVN_URL}/cbftp" "$CB_DIR_SRC"; then
+            exit 1
+        fi
         NEEDS_BUILD=1
     else
-        local current_url=$(get_svn_info "$CBDIRSRC" repos-root-url)
-        if [ "$current_url" != "${SVN_URL}/cbftp" ]; then
-            echo "Updating SVN repository URL. Changing from $current_url to ${SVN_URL}/cbftp"
-            svn relocate "${SVN_URL}/cbftp" "$CBDIRSRC" || exit 1
+        local current_url
+        current_url=$(get_svn_info "$CB_DIR_SRC" repos-root-url)
+        if [ "$current_url" != "${CB_SVN_URL}/cbftp" ]; then
+            echo "Updating SVN repository URL. Changing from $current_url to ${CB_SVN_URL}/cbftp"
+            if ! svn relocate "${CB_SVN_URL}/cbftp" "$CB_DIR_SRC"; then
+                exit 1
+            fi
         fi
     fi
 }
@@ -157,21 +177,23 @@ main() {
     check_dependencies
     NEEDS_BUILD=0
     initialize_or_update_svn
-    verify_directory "$CBDIRSRC"
-
-    local local_rev=$(get_svn_info "$CBDIRSRC" last-changed-revision)
-    local remote_rev=$(get_svn_info "$CBDIRSRC" revision)
-
+    verify_directory "$CB_DIR_SRC"
+    
+    local local_rev
+    local_rev=$(get_svn_info "$CB_DIR_SRC" last-changed-revision)
+    local remote_rev
+    remote_rev=$(get_svn_info "$CB_DIR_SRC" revision)
+    
     if [ "$local_rev" == "$remote_rev" ] && [ "$NEEDS_BUILD" -eq 0 ]; then
         echo "Latest version of cbftp already installed (revision: $local_rev)."
         exit 0
     fi
-
+    
     echo "Updating cbftp from revision $local_rev to $remote_rev."
     [ "$NEEDS_BUILD" -eq 1 ] || update_sources
     build_cbftp
     deploy_cbftp
-    restart_service
+    
     echo "cbftp update completed successfully."
 }
 
