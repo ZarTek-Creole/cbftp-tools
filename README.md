@@ -1,6 +1,12 @@
 # cbftp-updater
 
-![GitHub](https://img.shields.io/github/license/ZarTek-Creole/cbftp-updater)
+[![GitHub](https://img.shields.io/github/license/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater)
+[![Bash](https://img.shields.io/badge/Language-Bash-blue)](https://en.wikipedia.org/wiki/Bash_(Unix_shell))
+[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen)](https://github.com/ZarTek-Creole/cbftp-updater/releases)
+[![Issues](https://img.shields.io/github/issues/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/issues)
+[![Contributors](https://img.shields.io/github/contributors/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/commits/main)
+
 
 ## Table of Contents
 
