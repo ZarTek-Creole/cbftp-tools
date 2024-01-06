@@ -164,8 +164,8 @@ initialize_or_update_svn() {
     else
         local current_url
         current_url=$(get_svn_info "$CB_DIR_SRC" repos-root-url)
-        if [ "$current_url" != "${CB_SVN_URL}/cbftp" ]; then
-            echo "Updating SVN repository URL. Changing from $current_url to ${CB_SVN_URL}/cbftp"
+        if [ "$current_url" != "${CB_SVN_URL}" ]; then
+            echo "Updating SVN repository URL. Changing from $current_url to ${CB_SVN_URL}"
             if ! svn relocate "${CB_SVN_URL}/cbftp" "$CB_DIR_SRC"; then
                 exit 1
             fi
