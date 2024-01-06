@@ -12,6 +12,7 @@ jobs:
       CB_DIR_SRC: "/home/runner/_downloads/cbftp"
       CB_DIR_DEST: "/home/runner/_autotrade/cbftp"
       CB_SVN_URL: "https://cbftp.glftpd.io/svn"
+      CB_WEBSITE: "https://cbftp.glftpd.io/"
 
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
           echo "Updating environment"
           sudo DEBIAN_FRONTEND="noninteractive" apt-get update
           echo "Installing dependencies"
-          sudo apt-get install -y subversion build-essential screen
+          sudo apt-get install -y subversion build-essential screen libxml2-utils curl
 
       - name: Configure Environment and Variables
         run: |
@@ -32,6 +33,7 @@ jobs:
             echo "CB_DIR_SRC=$CB_DIR_SRC"
             echo "CB_DIR_DEST=$CB_DIR_DEST"
             echo "CB_SVN_URL=$CB_SVN_URL"
+            echo "CB_WEBSITE=$CB_WEBSITE"
           } >> cbftp-updater.cfg
           cat cbftp-updater.cfg
 

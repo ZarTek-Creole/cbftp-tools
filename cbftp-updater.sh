@@ -53,10 +53,10 @@ check_root() {
 }
 
 check_dependencies() {
-    local dependencies=(svn make screen)
+    local dependencies=(svn make screen curl xmllint)
     for cmd in "${dependencies[@]}"; do
         if ! command -v "$cmd" &> /dev/null; then
-            echo "Error: $cmd is required but not installed. Install it with 'sudo apt-get install subversion build-essential screen'."
+            echo "Error: $cmd is required but not installed. Install it with 'sudo apt-get install subversion build-essential screen libxml2-utils curl'."
             exit 1
         fi
     done
@@ -69,24 +69,43 @@ verify_directory() {
     fi
 }
 
-get_svn_info() {
+get_svn_info2() {
     svn info "$1" --show-item "$2"
 }
 
 update_sources() {
+    cd "$CB_DIR_SRC" || { echo "Failed to change to directory $CB_DIR_SRC"; exit 1; }
     svn update
 }
 
 build_cbftp() {
     echo "Changing to directory: $CB_DIR_SRC"
     cd "$CB_DIR_SRC" || { echo "Failed to change to directory $CB_DIR_SRC"; exit 1; }
-    
     echo "Building cbftp..."
     make -j"$(nproc)" -s || { echo "Build failed"; exit 1; }
     
     cd - > /dev/null
 }
 
+# Function to fetch specific HTML content and remove specified tags
+fetch_and_clean_html() {
+    local url=$1
+    local xpath_expression=$2
+    local tags_to_remove=$3
+
+    # Fetch HTML content
+    local html_content=$(curl -s "$url")
+
+    # Extract specific content using xpath
+    local extracted_content=$(echo "$html_content" | xmllint --html --xpath "$xpath_expression" - 2>/dev/null)
+
+    # Remove specified HTML tags
+    for tag in $tags_to_remove; do
+        extracted_content=$(echo "$extracted_content" | sed "s/<$tag>//g; s/<\/$tag>//g")
+    done
+
+    echo "$extracted_content"
+}
 
 has_systemctl() {
     if command -v systemctl &> /dev/null; then
@@ -116,7 +135,7 @@ stop_cbftp_or_service() {
             pid=$(pidof -x "$CB_DIR_DEST/cbftp")
             echo "Process $CB_DIR_DEST/cbftp is running (PID $pid)."
             echo "Stopping $CB_DIR_DEST/cbftp process..."
-            kill "$pid"
+            kill -9 "$pid"
             local killed
             killed=$?
             if [ ! "$killed" -eq 0 ]; then
@@ -129,7 +148,19 @@ stop_cbftp_or_service() {
         fi
     fi
 }
+function show_changelog() {
+    # XPath expression for the specific content
+    xpath="/html/body/table/tr[11]"
 
+    # HTML tags to be removed
+    tags_to_remove="tr td pre"
+
+    # Function call
+    cleaned_html=$(fetch_and_clean_html "$CB_WEBSITE" "$xpath" "$tags_to_remove")
+
+    # Display the cleaned HTML content
+    echo "$cleaned_html"
+}
 start_cbftp_service() {
     if has_systemctl && systemctl list-units --all | grep -q "$CB_SERVICE.service"; then
         echo "Starting cbftp service..."
@@ -163,7 +194,7 @@ initialize_or_update_svn() {
         NEEDS_BUILD=1
     else
         local current_url
-        current_url=$(get_svn_info "$CB_DIR_SRC" repos-root-url)
+        current_url=$(get_svn_info2 "$CB_DIR_SRC" repos-root-url)
         if [ "$current_url" != "${CB_SVN_URL}" ]; then
             echo "Updating SVN repository URL. Changing from $current_url to ${CB_SVN_URL}"
             if ! svn relocate "${CB_SVN_URL}/cbftp" "$CB_DIR_SRC"; then
@@ -172,7 +203,17 @@ initialize_or_update_svn() {
         fi
     fi
 }
-
+get_svn_info() {
+    local dir=$1
+    local property=$2
+    if [[ "$property" == "last-changed-revision" ]]; then
+        svn info "$dir" | grep "Last Changed Rev" | awk '{print $4}'
+    elif [[ "$property" == "revision" ]]; then
+        svn info "$CB_SVN_URL" | grep "Revision" | awk '{print $2}'
+    else
+        echo "Propriété inconnue"
+    fi
+}
 main() {
     echo "Starting cbftp update."
     check_root
@@ -181,10 +222,9 @@ main() {
     initialize_or_update_svn
     verify_directory "$CB_DIR_SRC"
     
-    local local_rev
     local_rev=$(get_svn_info "$CB_DIR_SRC" last-changed-revision)
-    local remote_rev
     remote_rev=$(get_svn_info "$CB_DIR_SRC" revision)
+
     
     if [ "$local_rev" == "$remote_rev" ] && [ "$NEEDS_BUILD" -eq 0 ]; then
         echo "Latest version of cbftp already installed (revision: $local_rev)."
@@ -195,7 +235,7 @@ main() {
     [ "$NEEDS_BUILD" -eq 1 ] || update_sources
     build_cbftp
     deploy_cbftp
-    
+    show_changelog
     echo "cbftp update completed successfully."
 }
 
