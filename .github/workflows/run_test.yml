@@ -4,42 +4,46 @@ on: [push, pull_request]
 
 jobs:
   test-cbftp-updater-script:
-    runs-on: ubuntu-latest
-    name: Run tests on ubuntu-latest
+    runs-on: ubuntu-22.04
+    env:
+      CB_USER: "$(id -u)"
+      CB_SCREEN: "cbftp"
+      CB_SERVICE: "cbftp.service"
+      CB_DIR_SRC: "/home/runner/_downloads/cbftp"
+      CB_DIR_DEST: "/home/runner/_autotrade/cbftp"
+      CB_SVN_URL: "https://cbftp.glftpd.io/svn"
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup Environment
         run: |
-          sudo apt-get update
-          sudo apt-get upgrade --force-yes -y
+          echo "Updating environment"
+          sudo DEBIAN_FRONTEND="noninteractive" apt-get update
+          # sudo apt-get upgrade --force-yes -y
+          echo "Installing dependencies"
           sudo apt-get install -y subversion build-essential screen
-          mkdir -p $HOME/_downloads/cbftp
-          mkdir -p $HOME/_autotrade/cbftp
-      - name: Configure Environment Variables
+
+      - name: Configure Environment and Variables
         run: |
-          echo "CB_USER=$(id -u)" >> cbftp-updater.cfg
-          echo "CB_SCREEN=cbftp" >> cbftp-updater.cfg
-          echo "CB_SERVICE=cbftp.service" >> cbftp-updater.cfg
-          echo "CB_DIR_SRC=$HOME/_downloads/cbftp" >> cbftp-updater.cfg
-          echo "CB_DIR_DEST=$HOME/_autotrade/cbftp" >> cbftp-updater.cfg
-          echo "CB_SVN_URL=https://cbftp.glftpd.io/svn" >> cbftp-updater.cfg
+          echo "CB_USER=$CB_USER" >> cbftp-updater.cfg
+          echo "CB_SCREEN=$CB_SCREEN" >> cbftp-updater.cfg
+          echo "CB_SERVICE=$CB_SERVICE" >> cbftp-updater.cfg
+          echo "CB_DIR_SRC=$CB_DIR_SRC" >> cbftp-updater.cfg
+          echo "CB_DIR_DEST=$CB_DIR_DEST" >> cbftp-updater.cfg
+          echo "CB_SVN_URL=$CB_SVN_URL" >> cbftp-updater.cfg
+          cat cbftp-updater.cfg
 
       - name: Run cbftp Updater Script
         run: |
           chmod +x ./cbftp-updater.sh
           sudo ./cbftp-updater.sh
-      # - name: Check systemd Availability
-      #   run: |
-      #       # sudo apt-get install -y systemd-coredump socat
-      #       sudo podman pull ghcr.io/eriksjolund/socket-activate-echo:latest
-      #       if ! sudo systemctl; then
-      #         echo "systemd is not available, skipping systemd related steps."
-      #         exit 0
-      #       fi
-      # - name: Install and Start cbftp Service
-      #   run: |
-      #     sudo loginctl enable-linger runner
-      #     sleep 5
-      #     ls /run/user/$UID 
-      #     chmod +x ./cbftp-install_service.sh
-      #     sudo ./cbftp-install_service.sh
+      
+      - name: Run rollback version
+        run: |
+          cd "$CB_DIR_SRC"
+          sudo svn checkout -r 1244 $CB_SVN_URL
+
+
+      - name: Run test updater script
+        run: |
+          sudo ./cbftp-updater.sh
