@@ -145,6 +145,7 @@ deploy_cbftp() {
     stop_cbftp_or_service
 
     echo "Deploying new cbftp binary..."
+    mkdir -p "${CB_DIR_DEST}/"
     cp -v "$CB_DIR_SRC/bin/cbftp" "$CB_DIR_DEST" || { echo "Failed to deploy cbftp"; exit 1; }
     chown -R "$CB_USER:$CB_USER" "$CB_DIR_DEST"
     chmod +x "$CB_DIR_DEST/cbftp"
@@ -155,6 +156,7 @@ deploy_cbftp() {
 initialize_or_update_svn() {
     if [ ! -d "$CB_DIR_SRC/.svn" ]; then
         echo "Initializing SVN repository in $CB_DIR_SRC"
+        mkdir -p "$CB_DIR_SRC"
         if ! svn checkout -q "${CB_SVN_URL}/cbftp" "$CB_DIR_SRC"; then
             exit 1
         fi
