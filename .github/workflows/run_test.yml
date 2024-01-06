@@ -15,35 +15,36 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Environment
         run: |
           echo "Updating environment"
           sudo DEBIAN_FRONTEND="noninteractive" apt-get update
-          # sudo apt-get upgrade --force-yes -y
           echo "Installing dependencies"
           sudo apt-get install -y subversion build-essential screen
 
       - name: Configure Environment and Variables
         run: |
-          echo "CB_USER=$CB_USER" >> cbftp-updater.cfg
-          echo "CB_SCREEN=$CB_SCREEN" >> cbftp-updater.cfg
-          echo "CB_SERVICE=$CB_SERVICE" >> cbftp-updater.cfg
-          echo "CB_DIR_SRC=$CB_DIR_SRC" >> cbftp-updater.cfg
-          echo "CB_DIR_DEST=$CB_DIR_DEST" >> cbftp-updater.cfg
-          echo "CB_SVN_URL=$CB_SVN_URL" >> cbftp-updater.cfg
+          {
+            echo "CB_USER=$CB_USER"
+            echo "CB_SCREEN=$CB_SCREEN"
+            echo "CB_SERVICE=$CB_SERVICE"
+            echo "CB_DIR_SRC=$CB_DIR_SRC"
+            echo "CB_DIR_DEST=$CB_DIR_DEST"
+            echo "CB_SVN_URL=$CB_SVN_URL"
+          } >> cbftp-updater.cfg
           cat cbftp-updater.cfg
 
-      - name: Run cbftp Updater Script
-        run: |
-          chmod +x ./cbftp-updater.sh
-          sudo ./cbftp-updater.sh
-      
-      - name: Run rollback version
-        run: |
-          cd "$CB_DIR_SRC"
-          sudo svn checkout -r 1244 $CB_SVN_URL
+      - name: Make cbftp-updater.sh Executable
+        run: chmod +x ./cbftp-updater.sh
 
+      - name: Run cbftp Updater Script
+        run: sudo ./cbftp-updater.sh
+
+      - name: Checkout Rollback SVN Revision
+        run: |
+          sudo rm -rf "$CB_DIR_SRC"
+          sudo svn checkout -r 1244 "$CB_SVN_URL/cbftp" "$CB_DIR_SRC"
 
       - name: Run test updater script
-        run: |
-          sudo ./cbftp-updater.sh
+        run: sudo ./cbftp-updater.sh
