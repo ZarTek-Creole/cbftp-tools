@@ -60,3 +60,4 @@ jobs:
           sudo ./cbftp-crontab-installer.sh -f hourly
           sudo ./cbftp-crontab-installer.sh -f weekly
           sudo ./cbftp-crontab-installer.sh -f weekly
+          sudo ./cbftp-crontab-installer.sh -f remove

@@ -48,21 +48,37 @@ For any issues, questions, or suggestions related to this script, please visit t
 
 ## Configuration
 
-Before using the script, please make sure to configure the following variables in the script:
+Before using the script, you must configure it properly. Here's how to set up the configuration file:
 
-```bash
-CB_USER=your_user
-CB_SERVICE=cbftp.service
-CB_DIR_SRC="/path/to/source/directory"
-CB_DIR_DEST="/path/to/destination/directory"
-CB_SVN_URL="https://cbftp.glftpd.io/svn"
-```
+1. Rename the default configuration file:
 
-- `CB_USER`: The user for cbftp.
-- `CB_SERVICE`: The service name for cbftp.
-- `CB_DIR_SRC`: The source directory path for cbftp.
-- `CB_DIR_DEST`: The destination directory path for cbftp.
-- `CB_SVN_URL`: The SVN repository URL for cbftp.
+   ```bash
+   mv cbftp-updater.cfg.default cbftp-updater.cfg
+   ```
+
+2. Edit the `cbftp-updater.cfg` file to set the required variables. Open the file in a text editor and configure the following variables:
+
+   ```bash
+   CB_USER=my_user # The user under which cbftp is executed
+   CB_SERVICE=cbftp.service # Service name, if you are using a systemctl service
+   CB_SCREEN=cbftp # Screen name, if you are not using a systemctl service
+   CB_DIR_SRC="/path/to/source/directory" # Directory where the cbftp source is located
+   CB_DIR_DEST="/path/to/destination/directory" # Directory where the cbftp binary will be placed
+   CB_SVN_URL="https://cbftp.glftpd.io/svn" # SVN repository URL for cbftp (without the /cbftp ending)
+   CB_WEBSITE="https://cbftp.glftpd.io/"  # URL of the cbftp website
+   ```
+
+   - `CB_USER`: The user under which cbftp is executed. This should be the username under which cbftp runs.
+   - `CB_SERVICE`: The service name for cbftp, if you are using a systemctl service for management.
+   - `CB_SCREEN`: The screen name for cbftp, if you are not using a systemctl service and instead use GNU Screen.
+   - `CB_DIR_SRC`: The directory where the cbftp source code is located.
+   - `CB_DIR_DEST`: The directory where the cbftp binary will be placed after the update.
+   - `CB_SVN_URL`: The SVN repository URL for cbftp updates (without the `/cbftp` ending).
+   - `CB_WEBSITE`: The official URL of the cbftp website.
+
+3. Save your changes to the `cbftp-updater.cfg` file.
+
+Ensure these variables are correctly configured to match your cbftp installation and environment. After setting up the configuration file, you can proceed with using the script as described in the `Usage` section.
 
 ## Usage
 
