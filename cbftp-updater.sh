@@ -39,8 +39,12 @@ if [ ! -f "$CFG_FILE" ]; then
     exit 1
 fi
 
+# Load configuration using "source" for better readability
 # shellcheck disable=SC1090
-. "$CFG_FILE" || exit 1
+. "$CFG_FILE" || {
+    echo "Error: Failed to load configuration from '$CFG_FILE'. Please check the file for errors."
+    exit 1
+}
 
 
 trap 'echo "Error during script execution: $BASH_COMMAND" ; exit 1' ERR
