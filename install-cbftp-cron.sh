@@ -2,7 +2,7 @@
 ###############################################################################################
 #
 #   Name         :
-#       cbftp-crontab-installer.sh
+#       install-cbftp-cron.sh
 #
 #   Description  :
 #       Bash script for setting up a crontab for cbftp-updater.
@@ -26,9 +26,11 @@
 ###############################################################################################
 
 # Constants
+set -Eeuo pipefail
+export LANG=en_US
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
-readonly CONFIG_FILE="${SCRIPT_DIR}/cbftp-updater.cfg"
+readonly CONFIG_FILE="${SCRIPT_DIR}/cbftp-configuration.cfg"
 
 # Load configuration
 load_configuration() {

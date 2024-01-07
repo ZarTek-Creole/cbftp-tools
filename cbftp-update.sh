@@ -29,13 +29,13 @@
 ###############################################################################################
 
 set -Eeuo pipefail
-set -Eeuo pipefail
+export LANG=en_US
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-CFG_FILE="$SCRIPT_DIR/cbftp-updater.cfg"
+CFG_FILE="$SCRIPT_DIR/cbftp-configuration.cfg"
 
 if [ ! -f "$CFG_FILE" ]; then
-    echo "Error: Configuration file 'cbftp-updater.cfg' not found. Please rename 'cbftp-updater.cfg.default' to 'cbftp-updater.cfg' and edit it with your configuration."
+    echo "Error: Configuration file 'cbftp-configuration.cfg' not found. Please rename 'cbftp-configuration.cfg.default' to 'cbftp-configuration.cfg' and edit it with your configuration."
     exit 1
 fi
 
@@ -225,7 +225,7 @@ main() {
     NEEDS_BUILD=0
     initialize_or_update_svn
     verify_directory "$CB_DIR_SRC"
-    
+    cd "$CB_DIR_SRC" || { echo "Failed to change to directory $CB_DIR_SRC"; exit 1; }
     local_rev=$(get_svn_info "$CB_DIR_SRC" last-changed-revision)
     remote_rev=$(get_svn_info "$CB_DIR_SRC" revision)
 
