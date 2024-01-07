@@ -27,7 +27,7 @@
 
 ## Description
 
-"cbftp-updater.sh" is a Bash script designed for the management and automatic updating of cbftp via Subversion (SVN). It simplifies the task of keeping your cbftp installation up to date with an efficient script.
+"cbftp-updater.sh" is a Bash script designed to manage and automatically update cbftp via Subversion (SVN). It simplifies the task of keeping your cbftp installation up to date with an efficient script.
 
 ## Donation
 
@@ -48,37 +48,35 @@ For any issues, questions, or suggestions related to this script, please visit t
 
 ## Configuration
 
-Before using the script, you must configure it properly. Here's how to set up the configuration file:
+"cbftp-updater-config.sh" is a new Bash script designed to simplify the configuration process. To use it, follow these steps:
 
-1. Rename the default configuration file:
-
-   ```bash
-   mv cbftp-updater.cfg.default cbftp-updater.cfg
-   ```
-
-2. Edit the `cbftp-updater.cfg` file to set the required variables. Open the file in a text editor and configure the following variables:
+1. Clone this repository:
 
    ```bash
-   CB_USER=my_user # The user under which cbftp is executed
-   CB_SERVICE=cbftp.service # Service name, if you are using a systemctl service
-   CB_SCREEN=cbftp # Screen name, if you are not using a systemctl service
-   CB_DIR_SRC="/path/to/source/directory" # Directory where the cbftp source is located
-   CB_DIR_DEST="/path/to/destination/directory" # Directory where the cbftp binary will be placed
-   CB_SVN_URL="https://cbftp.glftpd.io/svn" # SVN repository URL for cbftp (without the /cbftp ending)
-   CB_WEBSITE="https://cbftp.glftpd.io/"  # URL of the cbftp website
+   git clone https://github.com/ZarTek-Creole/cbftp-updater.git
    ```
 
-   - `CB_USER`: The user under which cbftp is executed. This should be the username under which cbftp runs.
-   - `CB_SERVICE`: The service name for cbftp, if you are using a systemctl service for management.
-   - `CB_SCREEN`: The screen name for cbftp, if you are not using a systemctl service and instead use GNU Screen.
-   - `CB_DIR_SRC`: The directory where the cbftp source code is located.
-   - `CB_DIR_DEST`: The directory where the cbftp binary will be placed after the update.
-   - `CB_SVN_URL`: The SVN repository URL for cbftp updates (without the `/cbftp` ending).
-   - `CB_WEBSITE`: The official URL of the cbftp website.
+2. Navigate to the cloned directory:
 
-3. Save your changes to the `cbftp-updater.cfg` file.
+   ```bash
+   cd cbftp-updater
+   ```
 
-Ensure these variables are correctly configured to match your cbftp installation and environment. After setting up the configuration file, you can proceed with using the script as described in the `Usage` section.
+3. Make the configuration script executable:
+
+   ```bash
+   chmod +x cbftp-updater-config.sh
+   ```
+
+4. Run the configuration script:
+
+   ```bash
+   ./cbftp-updater-config.sh
+   ```
+
+   Follow the prompts to configure each required variable.
+
+The script will create a configuration file "cbftp-updater.cfg" with the appropriate settings for your environment.
 
 ## Usage
 
@@ -100,7 +98,11 @@ Ensure these variables are correctly configured to match your cbftp installation
    chmod +x cbftp-install_service.sh
    ```
 
-4. Edit the script to configure the variables mentioned in the "Configuration" section.
+4. Edit the script to configure the variables mentioned in the "Configuration" section or use the configuration script:
+
+   ```bash
+   ./cbftp-updater-config.sh
+   ```
 
 5. Run the script:
 
@@ -116,9 +118,7 @@ To automate the execution of this script once a week, you can use the cron sched
 
 1. Open a terminal on your Debian system.
 
-2. To edit the cron table for the current
-
- user, type the following command:
+2. To edit the cron table for the current user, type the following command:
 
    ```bash
    crontab -e
@@ -188,7 +188,9 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-Once you've saved the unit file, run the following commands to enable and start the CBFTP service:
+Once you've saved the unit file
+
+, run the following commands to enable and start the CBFTP service:
 
 ```bash
 sudo systemctl daemon-reload
