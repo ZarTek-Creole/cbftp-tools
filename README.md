@@ -48,7 +48,7 @@ For any issues, questions, or suggestions related to this script, please visit t
 
 ## Configuration
 
-"cbftp-updater-config.sh" is a new Bash script designed to simplify the configuration process. To use it, follow these steps:
+"configure-cbftp-updater.sh" is a new Bash script designed to simplify the configuration process. To use it, follow these steps:
 
 1. Clone this repository:
 
@@ -65,18 +65,18 @@ For any issues, questions, or suggestions related to this script, please visit t
 3. Make the configuration script executable:
 
    ```bash
-   chmod +x cbftp-updater-config.sh
+   chmod +x configure-cbftp-updater.sh
    ```
 
 4. Run the configuration script:
 
    ```bash
-   ./cbftp-updater-config.sh
+   ./configure-cbftp-updater.sh
    ```
 
    Follow the prompts to configure each required variable.
 
-The script will create a configuration file "cbftp-updater.cfg" with the appropriate settings for your environment.
+The script will create a configuration file "cbftp-configuration.cfg" with the appropriate settings for your environment.
 
 ## Usage
 
@@ -95,19 +95,19 @@ The script will create a configuration file "cbftp-updater.cfg" with the appropr
 3. Make the script executable:
 
    ```bash
-   chmod +x cbftp-install_service.sh
+   chmod +x install-cbftp-service.sh
    ```
 
 4. Edit the script to configure the variables mentioned in the "Configuration" section or use the configuration script:
 
    ```bash
-   ./cbftp-updater-config.sh
+   ./configure-cbftp-updater.sh
    ```
 
 5. Run the script:
 
    ```bash
-   ./cbftp-install_service.sh
+   ./install-cbftp-service.sh
    ```
 
 The script will manage and update your cbftp installation as needed.
@@ -129,10 +129,10 @@ To automate the execution of this script once a week, you can use the cron sched
 3. Add the following line to schedule the script to run once a week:
 
    ```bash
-   0 0 * * 0 /path/to/your/script/cbftp-install_service.sh
+   0 0 * * 0 /path/to/your/script/install-cbftp-service.sh
    ```
 
-   This line schedules the script to run at midnight (00:00) every Sunday (day of the week 0). Replace "/path/to/your/script" with the full path to the directory where your "cbftp-install_service.sh" script is located.
+   This line schedules the script to run at midnight (00:00) every Sunday (day of the week 0). Replace "/path/to/your/script" with the full path to the directory where your "install-cbftp-service.sh" script is located.
 
 4. Save and close the text editor.
 
@@ -140,26 +140,26 @@ To automate the execution of this script once a week, you can use the cron sched
 
 ## Automating with cbftp-crontab-installer
 
-The `cbftp-crontab-installer.sh` script simplifies the process of setting up and managing a crontab for `cbftp-updater`. It allows you to easily add, update, or remove a cron job for the updater script.
+The `install-cbftp-cron.sh` script simplifies the process of setting up and managing a crontab for `cbftp-updater`. It allows you to easily add, update, or remove a cron job for the updater script.
 
-To use the `cbftp-crontab-installer.sh` script:
+To use the `install-cbftp-cron.sh` script:
 
 1. Make the script executable:
 
    ```bash
-   chmod +x cbftp-crontab-installer.sh
+   chmod +x install-cbftp-cron.sh
    ```
 
 2. Run the script with optional parameters or in interactive mode:
 
    ```bash
-   ./cbftp-crontab-installer.sh
+   ./install-cbftp-cron.sh
    ```
 
    You can specify the script name and frequency directly via command line arguments. For more information, use:
 
    ```bash
-   ./cbftp-crontab-installer.sh -h
+   ./install-cbftp-cron.sh -h
    ```
 
 This script provides an easy and flexible way to automate your cbftp updates.

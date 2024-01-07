@@ -5,7 +5,7 @@ echo "CBFTP Updater Configuration Script"
 echo "----------------------------------"
 
 # Constants
-CONFIG_FILE="cbftp-updater.cfg"
+CONFIG_FILE="cbftp-configuration.cfg"
 DEFAULT_USER=$(whoami)
 DEFAULT_DIR_SRC="$HOME/_downloads/cbftp/"
 DEFAULT_DIR_DEST="$HOME/_autotrade/cbftp/"
