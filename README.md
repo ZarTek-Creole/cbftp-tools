@@ -19,6 +19,7 @@
   - [Configuration](#configuration)
   - [Usage](#usage)
   - [Automating Updates with Cron](#automating-updates-with-cron)
+  - [Automating with cbftp-crontab-installer](#automating-with-cbftp-crontab-installer)
   - [Creating a CBFTP Service](#creating-a-cbftp-service)
   - [Attaching to the CBFTP Screen Session](#attaching-to-the-cbftp-screen-session)
   - [Acknowledgments](#acknowledgments)
@@ -99,7 +100,9 @@ To automate the execution of this script once a week, you can use the cron sched
 
 1. Open a terminal on your Debian system.
 
-2. To edit the cron table for the current user, type the following command:
+2. To edit the cron table for the current
+
+ user, type the following command:
 
    ```bash
    crontab -e
@@ -119,7 +122,31 @@ To automate the execution of this script once a week, you can use the cron sched
 
 5. The cron is now configured to run your script once a week, automatically keeping your cbftp installation up to date.
 
-Make sure your script is still executable with the `chmod +x cbftp-install_service.sh` command so that it can be executed by the cron. You can customize the schedule by adjusting the values in the cron line according to your needs.
+## Automating with cbftp-crontab-installer
+
+The `cbftp-crontab-installer.sh` script simplifies the process of setting up and managing a crontab for `cbftp-updater`. It allows you to easily add, update, or remove a cron job for the updater script.
+
+To use the `cbftp-crontab-installer.sh` script:
+
+1. Make the script executable:
+
+   ```bash
+   chmod +x cbftp-crontab-installer.sh
+   ```
+
+2. Run the script with optional parameters or in interactive mode:
+
+   ```bash
+   ./cbftp-crontab-installer.sh
+   ```
+
+   You can specify the script name and frequency directly via command line arguments. For more information, use:
+
+   ```bash
+   ./cbftp-crontab-installer.sh -h
+   ```
+
+This script provides an easy and flexible way to automate your cbftp updates.
 
 ## Creating a CBFTP Service
 

@@ -6,7 +6,7 @@ jobs:
   test-cbftp-updater-script:
     runs-on: ubuntu-22.04
     env:
-      CB_USER: "$(id -u)"
+      CB_USER: "runner"
       CB_SCREEN: "cbftp"
       CB_SERVICE: "cbftp.service"
       CB_DIR_SRC: "/home/runner/_downloads/cbftp"
@@ -50,3 +50,13 @@ jobs:
 
       - name: Run test updater script
         run: sudo ./cbftp-updater.sh
+
+      - name: Make cbftp-crontab-installer.sh Executable
+        run: chmod +x ./cbftp-crontab-installer.sh
+
+      - name: Run cbftp Installer Script
+        run: |
+          sudo ./cbftp-crontab-installer.sh -h
+          sudo ./cbftp-crontab-installer.sh -f hourly
+          sudo ./cbftp-crontab-installer.sh -f weekly
+          sudo ./cbftp-crontab-installer.sh -f weekly
