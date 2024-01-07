@@ -34,8 +34,8 @@ jobs:
             echo "CB_DIR_DEST=$CB_DIR_DEST"
             echo "CB_SVN_URL=$CB_SVN_URL"
             echo "CB_WEBSITE=$CB_WEBSITE"
-          } >> cbftp-updater.cfg
-          cat cbftp-updater.cfg
+          } >> cbftp-configuration.cfg
+          cat cbftp-configuration.cfg
 
       - name: Make cbftp-updater.sh Executable
         run: chmod +x ./cbftp-updater.sh
@@ -51,13 +51,13 @@ jobs:
       - name: Run test updater script
         run: sudo ./cbftp-updater.sh
 
-      - name: Make cbftp-crontab-installer.sh Executable
-        run: chmod +x ./cbftp-crontab-installer.sh
+      - name: Make install-cbftp-cron.sh Executable
+        run: chmod +x ./install-cbftp-cron.sh
 
       - name: Run cbftp Installer Script
         run: |
-          sudo ./cbftp-crontab-installer.sh -h
-          sudo ./cbftp-crontab-installer.sh -f hourly
-          sudo ./cbftp-crontab-installer.sh -f weekly
-          sudo ./cbftp-crontab-installer.sh -f weekly
-          sudo ./cbftp-crontab-installer.sh -f remove
+          sudo ./install-cbftp-cron.sh -h
+          sudo ./install-cbftp-cron.sh -f hourly
+          sudo ./install-cbftp-cron.sh -f weekly
+          sudo ./install-cbftp-cron.sh -f weekly
+          sudo ./install-cbftp-cron.sh -f remove
