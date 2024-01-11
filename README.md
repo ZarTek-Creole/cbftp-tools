@@ -71,6 +71,42 @@ cbftp-tools cbftp --reinstall
 ### Updating cbftp
 ```bash
 cbftp-tools cbftp --update
+Starting cbftp update.
+Updating cbftp from revision 1244 to 1246.
+Updating '.':
+A    src/ui/siteselection.cpp
+A    src/ui/siteselection.h
+U    src/ui/ui.h
+U    src/ui/ui.cpp
+U    src/ui/screens/alltransferjobsscreen.h
+U    src/ui/screens/sitestatusscreen.cpp
+A    src/ui/screens/transferjobsfilterscreen.cpp
+U    src/ui/screens/mainscreen.cpp
+U    src/ui/screens/allracesscreen.cpp
+U    src/ui/screens/alltransferjobsscreen.cpp
+U    src/ui/screens/transfersscreen.h
+A    src/ui/screens/transferjobsfilterscreen.h
+U    src/ui/screens/transfersfilterscreen.cpp
+U    src/ui/screens/browsescreensite.h
+U    src/ui/screens/allracesscreen.h
+A    src/ui/screens/spreadjobsfilterscreen.cpp
+U    src/ui/screens/transfersscreen.cpp
+A    src/ui/screens/spreadjobsfilterscreen.h
+U    src/transfermonitor.cpp
+Updated to revision 1246.
+Changing to directory: /usr/local/src/cbftp
+Building cbftp...
+Stopping cbftp_zartek.service service...
+cbftp_zartek.service service stopped successfully.
+No init.d service starting with cbftp* was found.
+Deploying new cbftp binary...
+cbftp deployed.
+Starting cbftp_zartek.service service...
+cbftp_zartek.service service started successfully.
+Latest changes:
+r1246 2024-01-08 - fixed how local and in-memory transfers are displayed in
+                   transfers/transferstatus
+cbftp update completed successfully.
 ```
 
 ## Dependencies 📦
