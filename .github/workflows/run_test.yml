@@ -37,11 +37,11 @@ jobs:
           } >> cbftp-configuration.cfg
           cat cbftp-configuration.cfg
 
-      - name: Make cbftp-updater.sh Executable
-        run: chmod +x ./cbftp-updater.sh
+      - name: Make cbftp-auto_update.sh Executable
+        run: chmod +x ./cbftp-auto_update.sh
 
       - name: Run cbftp Updater Script
-        run: sudo ./cbftp-updater.sh
+        run: sudo ./cbftp-auto_update.sh
 
       - name: Checkout Rollback SVN Revision
         run: |
@@ -49,15 +49,15 @@ jobs:
           sudo svn checkout -r 1244 "$CB_SVN_URL/cbftp" "$CB_DIR_SRC"
 
       - name: Run test updater script
-        run: sudo ./cbftp-updater.sh
+        run: sudo ./cbftp-auto_update.sh
 
-      - name: Make install-cbftp-cron.sh Executable
-        run: chmod +x ./install-cbftp-cron.sh
+      - name: Make cbftp-crontab.sh Executable
+        run: chmod +x ./cbftp-crontab.sh
 
       - name: Run cbftp Installer Script
         run: |
-          sudo ./install-cbftp-cron.sh -h
-          sudo ./install-cbftp-cron.sh -f hourly
-          sudo ./install-cbftp-cron.sh -f weekly
-          sudo ./install-cbftp-cron.sh -f weekly
-          sudo ./install-cbftp-cron.sh -f remove
+          sudo ./cbftp-crontab.sh -h
+          sudo ./cbftp-crontab.sh -f hourly
+          sudo ./cbftp-crontab.sh -f weekly
+          sudo ./cbftp-crontab.sh -f weekly
+          sudo ./cbftp-crontab.sh -f remove

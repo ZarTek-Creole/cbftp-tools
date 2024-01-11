@@ -1,220 +1,129 @@
-# cbftp-updater
+# cbftp-tools 🚀
 
-[![GitHub](https://img.shields.io/github/license/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater)
-[![Bash](https://img.shields.io/badge/Language-Bash-blue)](https://en.wikipedia.org/wiki/Bash_(Unix_shell))
-[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen)](https://github.com/ZarTek-Creole/cbftp-updater/releases)
-[![Issues](https://img.shields.io/github/issues/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/issues)
-[![Contributors](https://img.shields.io/github/contributors/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/graphs/contributors)
-[![Last Commit](https://img.shields.io/github/last-commit/ZarTek-Creole/cbftp-updater)](https://github.com/ZarTek-Creole/cbftp-updater/commits/main)
+## Introduction 📌
 
-## Table of Contents
+`cbftp-tools` is a Bash script designed to streamline the management and automatic updating of the cbftp installation via Subversion (SVN). It offers an efficient solution for keeping your cbftp installation up to date with ease. This tool is tested on Debian 12 and Ubuntu 22.04.
 
-- [cbftp-updater](#cbftp-updater)
-  - [Table of Contents](#table-of-contents)
-  - [Description](#description)
-  - [Donation](#donation)
-  - [Author](#author)
-  - [Repository](#repository)
-  - [Support](#support)
-  - [Configuration](#configuration)
-  - [Usage](#usage)
-  - [Automating Updates with Cron](#automating-updates-with-cron)
-  - [Automating with cbftp-crontab-installer](#automating-with-cbftp-crontab-installer)
-  - [Creating a CBFTP Service](#creating-a-cbftp-service)
-  - [Attaching to the CBFTP Screen Session](#attaching-to-the-cbftp-screen-session)
-  - [Acknowledgments](#acknowledgments)
-  - [Official CBFTP Website](#official-cbftp-website)
+## Table of Contents 📚
 
-## Description
+- [Installation](#installation) 🛠️
+- [Usage](#usage) 💻
+- [Features](#features) ✨
+- [Examples](#examples) 📝
+- [Dependencies](#dependencies) 📦
+- [Configuration](#configuration) ⚙️
+- [Troubleshooting](#troubleshooting) 🔍
+- [Contributing](#contributing) 🤝
+- [Contributors](#contributors) 👥
+- [License](#license) 📜
+- [Acknowledgements](#acknowledgements) 🙏
+- [Official CBFTP Website](#official-cbftp-website) 🔗
+- [Donation](#donation) 💖
+- [Author](#author) 👤
+- [Repository](#repository) 📁
+- [Support](#support) 🆘
+- [Contact](#contact) 📞
 
-"cbftp-updater.sh" is a Bash script designed to manage and automatically update cbftp via Subversion (SVN). It simplifies the task of keeping your cbftp installation up to date with an efficient script.
+## Installation 🛠️
 
-## Donation
+```bash
+curl -s https://raw.githubusercontent.com/ZarTek-Creole/cbftp-tools/master/cbftp-tools_install.sh | bash -s -- --install
+```
+
+## Usage 💻
+
+```bash
+sudo cbftp-tools [command]
+```
+
+Commands include:
+- `--help`
+- `--install`
+- `--uninstall`
+- `--reinstall`
+- `--update`
+
+Subcommands for managing `cbftp` and related services like `crontab`, `init.d`, and `systemd` are available.
+
+## Features ✨
+
+- **cbftp Binary Management**: Install, uninstall, and update the cbftp binary.
+- **Service Management**: Handle `cbftp` services using `init.d` or `systemd`.
+- **Crontab Integration**: Automate updates through a crontab script.
+
+## Examples 📝
+
+### Installing cbftp
+```bash
+cbftp-tools cbftp -i
+```
+
+### Updating cbftp-tools
+```bash
+cbftp-tools --update
+```
+
+### Reinstalling cbftp
+```bash
+cbftp-tools cbftp --reinstall
+```
+
+### Updating cbftp
+```bash
+cbftp-tools cbftp --update
+```
+
+## Dependencies 📦
+
+```bash
+sudo apt-get install subversion git build-essential screen libxml2-utils curl
+```
+
+## Configuration ⚙️
+
+Configuration details for individual scripts are included within each script.
+
+## Troubleshooting 🔍
+
+For common issues and their solutions, please refer to the [GitHub Issues page](https://github.com/ZarTek-Creole/cbftp-tools/issues).
+
+## Contributing 🤝
+
+Contributions are welcome! Please submit pull requests on GitHub. For specific guidelines, refer to the [CONTRIBUTING.md](https://github.com/ZarTek-Creole/cbftp-tools/CONTRIBUTING.md) file in the repository.
+
+## Contributors 👥
+
+Authored by ZarTek. Additional contributions are listed on the GitHub repository.
+
+## License 📜
+
+The project is licensed under [LICENSE](https://github.com/ZarTek-Creole/cbftp-tools/LICENSE). Please refer to the link for the full text.
+
+## Acknowledgements 🙏
+
+Special thanks to the cbftp project, PCFiL, harrox, deeps, and all developers in the scene.
+
+## Official CBFTP Website 🔗
+
+For more information, visit [cbftp.glftpd.io](https://cbftp.glftpd.io/).
+
+## Donation 💖
 
 If you find this script useful and want to support its development, consider making a donation [here](https://github.com/ZarTek-Creole/DONATE).
 
-## Author
+## Author 👤
 
 - ZarTek
 - GitHub: [ZarTek-Creole](https://github.com/ZarTek-Creole)
 
-## Repository
+## Repository 📁
 
-GitHub Repository: [cbftp-updater](https://github.com/ZarTek-Creole/cbftp-updater)
+GitHub Repository: [cbftp-tools](https://github.com/ZarTek-Creole/cbftp-tools)
 
-## Support
+## Support 🆘
 
-For any issues, questions, or suggestions related to this script, please visit the [GitHub Issues](https://github.com/ZarTek-Creole/cbftp-updater/issues) page.
+For any issues, questions, or suggestions related to this script, please visit the [GitHub Issues](https://github.com/ZarTek-Creole/cbftp-tools/issues) page.
 
-## Configuration
+## Contact 📞
 
-"configure-cbftp-updater.sh" is a new Bash script designed to simplify the configuration process. To use it, follow these steps:
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/ZarTek-Creole/cbftp-updater.git
-   ```
-
-2. Navigate to the cloned directory:
-
-   ```bash
-   cd cbftp-updater
-   ```
-
-3. Make the configuration script executable:
-
-   ```bash
-   chmod +x configure-cbftp-updater.sh
-   ```
-
-4. Run the configuration script:
-
-   ```bash
-   ./configure-cbftp-updater.sh
-   ```
-
-   Follow the prompts to configure each required variable.
-
-The script will create a configuration file "cbftp-configuration.cfg" with the appropriate settings for your environment.
-
-## Usage
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/ZarTek-Creole/cbftp-updater.git
-   ```
-
-2. Navigate to the cloned directory:
-
-   ```bash
-   cd cbftp-updater
-   ```
-
-3. Make the script executable:
-
-   ```bash
-   chmod +x install-cbftp-service.sh
-   ```
-
-4. Edit the script to configure the variables mentioned in the "Configuration" section or use the configuration script:
-
-   ```bash
-   ./configure-cbftp-updater.sh
-   ```
-
-5. Run the script:
-
-   ```bash
-   ./install-cbftp-service.sh
-   ```
-
-The script will manage and update your cbftp installation as needed.
-
-## Automating Updates with Cron
-
-To automate the execution of this script once a week, you can use the cron scheduling feature in your Linux Debian system. Here's how to set it up:
-
-1. Open a terminal on your Debian system.
-
-2. To edit the cron table for the current user, type the following command:
-
-   ```bash
-   crontab -e
-   ```
-
-   This will open the default text editor to edit your user's cron table.
-
-3. Add the following line to schedule the script to run once a week:
-
-   ```bash
-   0 0 * * 0 /path/to/your/script/install-cbftp-service.sh
-   ```
-
-   This line schedules the script to run at midnight (00:00) every Sunday (day of the week 0). Replace "/path/to/your/script" with the full path to the directory where your "install-cbftp-service.sh" script is located.
-
-4. Save and close the text editor.
-
-5. The cron is now configured to run your script once a week, automatically keeping your cbftp installation up to date.
-
-## Automating with cbftp-crontab-installer
-
-The `install-cbftp-cron.sh` script simplifies the process of setting up and managing a crontab for `cbftp-updater`. It allows you to easily add, update, or remove a cron job for the updater script.
-
-To use the `install-cbftp-cron.sh` script:
-
-1. Make the script executable:
-
-   ```bash
-   chmod +x install-cbftp-cron.sh
-   ```
-
-2. Run the script with optional parameters or in interactive mode:
-
-   ```bash
-   ./install-cbftp-cron.sh
-   ```
-
-   You can specify the script name and frequency directly via command line arguments. For more information, use:
-
-   ```bash
-   ./install-cbftp-cron.sh -h
-   ```
-
-This script provides an easy and flexible way to automate your cbftp updates.
-
-## Creating a CBFTP Service
-
-To create a systemd service for cbftp, you can use the following service unit file. Save it as `cbftp.service` in the `/etc/systemd/system/` directory:
-
-```ini
-[Unit]
-Description=CBFTP Service
-After=network.target
-
-[Service]
-Type=oneshot
-WorkingDirectory=/path/to/destination/directory/cbftp
-ExecStart=/usr/bin/screen -dmS cbftp /path/to/destination/directory/cbftp/cbftp
-ExecStop=/usr/bin/screen -S cbftp -X quit
-RemainAfterExit=yes
-User=your_user
-Group=your_user
-Restart=on-failure
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Once you've saved the unit file
-
-, run the following commands to enable and start the CBFTP service:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable cbftp.service
-sudo systemctl start cbftp.service
-```
-
-This will create and start the CBFTP service, ensuring it runs on system startup.
-
-## Attaching to the CBFTP Screen Session
-
-To attach to the CBFTP screen session as a specific user, use the following command:
-
-```bash
-su your_user -c 'screen -x cbftp'
-```
-
-Replace `your_user` with the actual user you want to use to attach to the screen session.
-
-## Acknowledgments
-
-Special thanks to the cbftp project, PCFiL, harrox, deeps, and all developers in the scene.
-Special thanks to all the contributors and users of cbftp-updater for their support and contributions to the project.
-
-## Official CBFTP Website
-
-For more information about cbftp, please visit the [official CBFTP website](https://cbftp.glftpd.io/).
+For support or inquiries, please use the [GitHub Issues page](https://github.com/ZarTek-Creole/cbftp-tools/issues) or the contact method specified on the [official CBFTP website](https://cbftp.glftpd.io/).
